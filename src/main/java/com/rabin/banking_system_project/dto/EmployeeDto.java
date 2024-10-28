@@ -5,21 +5,22 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.io.Serializable;
 import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class CustomerDto implements Serializable {
+public class EmployeeDto {
 
     private Long id;
     private String name;
+    private String username;
+    private String email;
+    private String password;
     private String address;
+    private String role;
     private Date createDate;
     private Date modifiedDate;
     private String phoneNumber;
-    private String email;
-    private String username;
-    private String password;
 }
