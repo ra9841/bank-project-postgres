@@ -21,7 +21,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {
                     authorizationManagerRequestMatcherRegistry
-                            .requestMatchers("/customers","/customers/**","/actuator/metrics/**").permitAll()
+                            .requestMatchers("/customers","/customers/**","/employees","/actuator/metrics/**").permitAll()
                             .requestMatchers("/security/**").authenticated();
                 })
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> {

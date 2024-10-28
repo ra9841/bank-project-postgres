@@ -3,6 +3,7 @@ package com.rabin.banking_system_project.controller;
 import com.rabin.banking_system_project.dto.CustomerDto;
 import com.rabin.banking_system_project.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,6 +11,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/customers")
+//before running application run your redis server.Until & unless you do not close your redis server, data were
+// saved in redis server otherwise put time limit on properties file.(redis-server) on cmd and then on another cmd(redis-cli)then type (monitor) for monitor
+@EnableCaching
 public class CustomerController {
 
     @Autowired

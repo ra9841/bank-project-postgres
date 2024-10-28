@@ -8,6 +8,9 @@ import com.rabin.banking_system_project.repository.CustomerRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +33,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 
     @Override
+    @CachePut(value = "cache", key = "#customerDto.email") //#customerDto.email based on the email field of customerDto
     public CustomerDto savingTheCustomerRecord(CustomerDto customerDto) {
         Optional<Customer> existCustomer = customerRepository.findByEmail(customerDto.getEmail().toLowerCase());
         if (existCustomer.isPresent()) {
@@ -72,6 +76,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 
     //Other way in using stream for get mapping
+    @Cacheable(cacheNames = "cache1")
     @Override
     public List<CustomerDto> listOfCustomerRecord() {
         List<Customer> customers = customerRepository.findAll();
@@ -97,6 +102,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     //other way for delete mapping
     @Override
+    @CacheEvict(cacheNames = "cache2", key = "#email")
     public String deletingTheRecordByEmail(String email) {
         return customerRepository.findByEmail(email)
                 .map(customer -> {
@@ -107,6 +113,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+   @Cacheable(cacheNames = "cache", key = "#email")  // "#email" is used because as the parameter in the method
     public CustomerDto getParticularCustomerRecord(String email) {
         Optional<Customer> existCustomer = customerRepository.findByEmail(email);
         log.info("Customer record present in database {}", existCustomer);
@@ -120,6 +127,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    @CachePut(value = "cache", key = "#email")
     public CustomerDto updatingTheCustomerRecord(CustomerDto customerDto, String email) {
 
         CustomerDto customerDto1 = getParticularCustomerRecord(email);
@@ -143,6 +151,7 @@ public class CustomerServiceImpl implements CustomerService {
             customer.setUsername(customerDto1.getUsername().toLowerCase());
             customer.setPassword(passwordEncoder.encode(customerDto1.getPassword()));
             customer.setAddress(customerDto.getAddress().toLowerCase());
+            customer.setModifiedDate(new Date());
             log.info("Customer record set and about to save in database {}", customer);
 
             Customer customer1 = customerRepository.save(customer);
